@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from . models import Leadership
 
 # Create your views here
 def welcome(request):
     return render(request, 'welcome.html')
 
 def aboutus(request):
-    return render(request,'aboutus.html')
+    leaders = Leadership.objects.all()  # fetch all leaders
+    return render(request,'aboutus.html', {'leaders':leaders})
 
 def membership(request):
     return render(request, 'membership.html')

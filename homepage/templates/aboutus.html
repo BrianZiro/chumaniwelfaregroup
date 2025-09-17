@@ -232,45 +232,29 @@
   </section>
 
   <!-- Leadership Section -->
-  <section class="leadership fade-in" aria-label="Leadership Team">
-    <div class="container">
-      <h2 class="section-title">Our Leadership</h2>
-      <div class="leadership-grid">
-        <article class="leader-card">
-          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Jane Doe" class="leader-photo" />
-          <div class="leader-info">
-            <h3 class="leader-name">Jane Doe</h3>
-            <p class="leader-position">Chairperson</p>
-            <p class="leader-caption">Inspiring leadership for the community</p>
-          </div>
-        </article>
-        <article class="leader-card">
-          <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="John Smith" class="leader-photo" />
-          <div class="leader-info">
-            <h3 class="leader-name">John Smith</h3>
-            <p class="leader-position">Vice Chairperson</p>
-            <p class="leader-caption">Committed to community progress</p>
-          </div>
-        </article>
-        <article class="leader-card">
-          <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Mary Johnson" class="leader-photo" />
-          <div class="leader-info">
-            <h3 class="leader-name">Mary Johnson</h3>
-            <p class="leader-position">Secretary</p>
-            <p class="leader-caption">Organizing for effective impact</p>
-          </div>
-        </article>
-        <article class="leader-card">
-          <img src="https://randomuser.me/api/portraits/men/52.jpg" alt="Michael Brown" class="leader-photo" />
-          <div class="leader-info">
-            <h3 class="leader-name">Michael Brown</h3>
-            <p class="leader-position">Treasurer</p>
-            <p class="leader-caption">Ensuring financial transparency</p>
-          </div>
-        </article>
-      </div>
+<section class="leadership fade-in" aria-label="Leadership Team">
+  <div class="container">
+    <h2 class="section-title">Our Leadership</h2>
+    <div class="leadership-grid">
+      {% for leader in leaders %}
+      <article class="leader-card">
+        {% if leader.leader_photo %}
+        <img src="{{ leader.leader_photo.url }}" alt="{{ leader.leader_name }}" class="leader-photo" />
+        {% else %}
+        <img src="https://via.placeholder.com/260x260?text=No+Image" alt="{{ leader.leader_name }}" class="leader-photo" />
+        {% endif %}
+        <div class="leader-info">
+          <h3 class="leader-name">{{ leader.leader_name }}</h3>
+          <p class="leader-position">{{ leader.leader_position }}</p>
+          <p class="leader-caption">{{ leader.leader_caption }}</p>
+        </div>
+      </article>
+      {% empty %}
+      <p>No leadership members found.</p>
+      {% endfor %}
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- Footer -->
   <footer>
