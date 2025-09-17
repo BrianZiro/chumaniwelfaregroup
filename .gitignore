@@ -1,0 +1,6 @@
+# Ignore Python virtual environment
+myvenv/
+.env
+__pycache__/
+*.pyc
+db.sqlite3

@@ -1,0 +1,371 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projects & Activities | Chumani Welfare</title>
+
+    <!-- Victory Theme Colors -->
+    <style>
+        :root {
+            --color-primary: #D4AF37; /* Gold */
+            --color-secondary: #4169E1; /* Royal Blue */
+            --color-primary-gradient: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+            --color-secondary-gradient: linear-gradient(135deg, #4169E1 0%, #27408B 100%);
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Reset & base */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background: #fff;
+            color: #222;
+            line-height: 1.6;
+        }
+        a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Navbar (sticky) */
+        nav {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-bottom: 2px solid var(--color-primary);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li a {
+            font-weight: 600;
+            color: var(--color-secondary);
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: var(--color-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 1rem;
+            background: 
+                linear-gradient(rgba(20, 20, 20, 0.6), rgba(20, 20, 20, 0.6)),
+                url("{% static 'images/community-bg.jpg' %}") center/cover no-repeat;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 0 0 0.5rem 0;
+            text-shadow: 0 0 10px rgba(0,0,0,0.7);
+        }
+        .hero p {
+            font-size: 1.25rem;
+            font-weight: 500;
+            max-width: 600px;
+            text-shadow: 0 0 8px rgba(0,0,0,0.6);
+        }
+
+        /* Projects Section */
+        .projects-section {
+            max-width: 1200px;
+            margin: 3rem auto 5rem auto;
+            padding: 0 1rem;
+        }
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .category-filters button {
+            background: var(--color-secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 0 transparent;
+        }
+        .category-filters button.active,
+        .category-filters button:hover {
+            background: var(--color-primary);
+            box-shadow: 0 0 10px var(--color-primary);
+            color: #222;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            will-change: opacity, transform;
+        }
+        .project-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .project-card:hover {
+            box-shadow: 0 12px 20px rgba(212, 175, 55, 0.6);
+        }
+
+        .project-image-wrapper {
+            overflow: hidden;
+            position: relative;
+            height: 180px;
+        }
+        .project-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            border-bottom: 3px solid var(--color-primary);
+        }
+        .project-card:hover .project-image-wrapper img {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 8px var(--color-primary));
+        }
+
+        .project-content {
+            padding: 1rem 1.25rem 1.5rem 1.25rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: var(--color-secondary);
+        }
+        .project-description {
+            font-size: 0.95rem;
+            color: #444;
+            flex-grow: 1;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .project-button {
+            align-self: flex-start;
+            background: var(--color-primary);
+            color: #222;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 0 transparent;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .project-button:hover {
+            background: var(--color-secondary);
+            color: white;
+            box-shadow: 0 0 12px var(--color-primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--color-secondary);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        footer .social-icons {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        footer .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        footer .social-icons a:hover {
+            color: var(--color-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2.25rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+    <!-- Optional: FontAwesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">Chumani Welfare</div>
+        <ul>
+        <li><a href="{% url 'welcome' %}"">Home</a></li>
+        <li><a href="{% url 'aboutus' %}" aria-current="page">About Us</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="{% url 'membership' %}">Membership</a></li>
+        <li><a href="{% url 'events' %}">Events</a></li>
+        <li><a href="{% url 'resources' %}">Resources</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" role="banner" aria-label="Projects & Activities Banner">
+        <h1>Projects &amp; Activities</h1>
+        <p>Empowering the Chumani Community through impactful initiatives.</p>
+    </section>
+
+    <!-- Projects Section -->
+    <main class="projects-section" role="main" aria-label="Projects and Activities">
+        <!-- Category Filters -->
+        <div class="category-filters" role="tablist" aria-label="Project Categories">
+            {% for category in categories %}
+            <button type="button" class="{% if forloop.first %}active{% endif %}" data-category="{{ category|lower|slugify }}" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+                {{ category }}
+            </button>
+            {% endfor %}
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="projects-grid" id="projectsGrid">
+            {% for project in projects %}
+            <article class="project-card" data-category="{{ project.category|lower }}" tabindex="0" aria-label="{{ project.title }} project card">
+                <div class="project-image-wrapper">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }} image" loading="lazy" />
+                </div>
+                <div class="project-content">
+                    <h2 class="project-title">{{ project.title }}</h2>
+                    <p class="project-description">{{ project.description }}</p>
+                    {% if project.link %}
+                    <a href="{{ project.link }}" target="_blank" rel="noopener" class="project-button" aria-label="Learn more about {{ project.title }}">Learn More</a>
+                    {% else %}
+                    <a href="{% url 'project_detail' project.id %}" class="project-button" aria-label="Join {{ project.title }}">Join Us</a>
+                    {% endif %}
+                </div>
+            </article>
+            {% empty %}
+            <p>No projects available at the moment. Please check back later.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer role="contentinfo">
+        <p>© {{ now.year }} Chumani Welfare. All rights reserved.</p>
+        <p>Contact us: <a href="mailto:info@chumaniwelfare.org" style="color: var(--color-primary);">info@chumaniwelfare.org</a></p>
+        <div class="social-icons" aria-label="Social media links">
+            <a href="https://facebook.com/chumaniwelfare" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com/chumaniwelfare" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://instagram.com/chumaniwelfare" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Category Filter Logic
+        const filterButtons = document.querySelectorAll('.category-filters button');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                button.classList.add('active');
+                button.setAttribute('aria-selected', 'true');
+
+                const category = button.getAttribute('data-category');
+
+                projectCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Fade-in on scroll using Intersection Observer
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        projectCards.forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+
+</body>
+</html>

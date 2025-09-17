@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Events | Chumani Welfare</title>
+
+<!-- Victory Theme Colors & Styles -->
+<style>
+  /* your CSS here (same as you already have) */
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <div class="logo" onclick="location.href='/'">Chumani Welfare</div>
+  <ul>
+    <li><a href="{% url 'welcome' %}">Home</a></li>
+    <li><a href="{% url 'aboutus' %}">About Us</a></li>
+    <li><a href="{% url 'projects & activities' %}">Projects</a></li>
+    <li><a href="{% url 'membership' %}">Members</a></li>
+    <li><a href="{% url 'events' %}" aria-current="page">Events</a></li>
+    <li><a href="{% url 'contact' %}">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1>Events</h1>
+  <p>Bringing the Chumani Community Together Through Unity & Progress</p>
+</section>
+
+<main class="container">
+
+  <!-- Upcoming Events Calendar -->
+  <section>
+    <h2 style="text-align:center;">Upcoming Events</h2>
+    <div class="calendar">
+      <!-- Weekday headers -->
+      <div class="calendar-header">Sun</div>
+      <div class="calendar-header">Mon</div>
+      <div class="calendar-header">Tue</div>
+      <div class="calendar-header">Wed</div>
+      <div class="calendar-header">Thu</div>
+      <div class="calendar-header">Fri</div>
+      <div class="calendar-header">Sat</div>
+
+      {% for day in calendar_days %}
+      <div class="calendar-day" data-event-ids="{{ day.events|join:',' }}">
+        <div class="date-number">{{ day.date|date:"j" }}</div>
+        {% for event in day.events|slice:":2" %}
+          <div class="event-title" title="{{ event.title }}">{{ event.title }}</div>
+        {% endfor %}
+        {% if day.events|length > 2 %}
+          <div class="event-count">+{{ day.events|length|add:"-2" }} more</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Past Events Section -->
+  <section class="past-events">
+    <h2>Past Events</h2>
+    <div class="past-events-grid">
+      {% for event in past_events %}
+      <article class="past-event-card" data-event-id="{{ event.id }}">
+        <h3 class="past-event-title">{{ event.title }}</h3>
+        <time class="past-event-date" datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"M d, Y" }}</time>
+        <p class="past-event-recap">{{ event.short_recap }}</p>
+        {% if event.report_url %}
+        <a href="{{ event.report_url }}" target="_blank" class="past-event-report">Download Report</a>
+        {% endif %}
+      </article>
+      {% empty %}
+      <p style="text-align:center;">No past events available.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal">
+    <button class="modal-close">&times;</button>
+    <h3 id="modalTitle"></h3>
+    <p id="modalDateTime"></p>
+    <p id="modalVenue"></p>
+    <p id="modalDescription"></p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>© {{ now.year }} Chumani Welfare. All rights reserved.</p>
+  <p>Contact: <a href="mailto:info@chumaniwelfare.org">info@chumaniwelfare.org</a></p>
+</footer>
+
+<script>
+  // Modal Logic
+  const modalOverlay = document.getElementById('eventModal');
+  const modalClose = document.querySelector('.modal-close');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDateTime = document.getElementById('modalDateTime');
+  const modalVenue = document.getElementById('modalVenue');
+  const modalDescription = document.getElementById('modalDescription');
+
+  // Example event data (replace with backend context)
+  const eventsData = {
+    {% for event in all_events %}
+    "{{ event.id }}": {
+      title: "{{ event.title }}",
+      date: "{{ event.date|date:'M d, Y' }}",
+      venue: "{{ event.venue }}",
+      description: "{{ event.description|escapejs }}"
+    },
+    {% endfor %}
+  };
+
+  document.querySelectorAll('.calendar-day, .past-event-card').forEach(el => {
+    el.addEventListener('click', () => {
+      const eventIds = el.dataset.eventIds ? el.dataset.eventIds.split(',') : [el.dataset.eventId];
+      if(eventIds && eventsData[eventIds[0]]) {
+        const ev = eventsData[eventIds[0]];
+        modalTitle.textContent = ev.title;
+        modalDateTime.textContent = ev.date;
+        modalVenue.textContent = ev.venue;
+        modalDescription.textContent = ev.description;
+        modalOverlay.classList.add('active');
+      }
+    });
+  });
+
+  modalClose.addEventListener('click', () => {
+    modalOverlay.classList.remove('active');
+  });
+</script>
+</body>
+</html>
