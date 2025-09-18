@@ -1,0 +1,145 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #fdfdfd, #f4f6fb);
+            margin: 0;
+            padding: 0;
+            color: #222;
+        }
+        header {
+            background: linear-gradient(90deg, goldenrod, royalblue);
+            padding: 1rem 2rem;
+            text-align: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        h2 {
+            margin-top: 2rem;
+            color: royalblue;
+            font-size: 1.6rem;
+            border-bottom: 3px solid goldenrod;
+            display: inline-block;
+            padding-bottom: 0.3rem;
+        }
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1.2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 6px solid goldenrod;
+        }
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        }
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.6rem;
+            color: royalblue;
+        }
+        .event-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.8rem;
+        }
+        .event-description {
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .event-image {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+        }
+        .empty-message {
+            background: #fff8dc;
+            border: 1px solid goldenrod;
+            padding: 1rem;
+            border-radius: 8px;
+            color: #444;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>Events</header>
+
+    <div class="container">
+
+        <!-- Upcoming Events -->
+        <h2>Upcoming Events</h2>
+        {% if upcoming_events %}
+            <div class="events-grid">
+                {% for event in upcoming_events %}
+                    <div class="event-card">
+                        {% if event.image %}
+                            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image">
+                        {% endif %}
+                        <div class="event-title">{{ event.title }}</div>
+                        <div class="event-meta">
+                            📅 {{ event.start_date|date:"M d, Y H:i" }}{% if event.end_date %} - {{ event.end_date|date:"M d, Y H:i" }}{% endif %}<br>
+                            📍 {{ event.location|default:"Location not specified" }}
+                        </div>
+                        <div class="event-description">
+                            {{ event.description|truncatewords:25 }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">No upcoming events at the moment.</p>
+        {% endif %}
+
+        <!-- Past Events -->
+        <h2>Past Events</h2>
+        {% if past_events %}
+            <div class="events-grid">
+                {% for event in past_events %}
+                    <div class="event-card">
+                        {% if event.image %}
+                            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image">
+                        {% endif %}
+                        <div class="event-title">{{ event.title }}</div>
+                        <div class="event-meta">
+                            📅 {{ event.start_date|date:"M d, Y H:i" }}{% if event.end_date %} - {{ event.end_date|date:"M d, Y H:i" }}{% endif %}<br>
+                            📍 {{ event.location|default:"Location not specified" }}
+                        </div>
+                        <div class="event-description">
+                            {{ event.description|truncatewords:20 }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">No past events recorded yet.</p>
+        {% endif %}
+
+    </div>
+</body>
+</html>
